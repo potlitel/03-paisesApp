@@ -8,15 +8,21 @@ import { PaisService } from '../../services/pais.service';
 })
 export class PorPaisComponent {
   //variable bindeada con el componente.html (se actualiza en ambas)
-  termino: string = '';
-
+  termino : string = '';
+  hayError: boolean = false;
 
   constructor( private paisService:PaisService ){}
   
   buscar() {
     // console.log(this.termino);
-    this.paisService.buscarPais( this.termino ).subscribe( resp => {
+    this.hayError = false;
+    this.paisService.buscarPais( this.termino ).subscribe(
+       (resp) => {
         console.log(resp);
+    }, (err) =>{
+        console.log('Error');
+        console.log(err);
+        this.hayError = true;
     } );
   }
 }
