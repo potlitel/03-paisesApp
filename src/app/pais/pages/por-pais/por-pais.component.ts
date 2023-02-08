@@ -6,12 +6,21 @@ import { PaisService } from '../../services/pais.service';
   selector: 'app-por-pais',
   templateUrl: './por-pais.component.html',
   styleUrls: ['./por-pais.component.css'],
+  styles: [
+    `
+      li {
+        cursor: pointer;
+      }
+    `,
+  ],
 })
 export class PorPaisComponent {
   //variable bindeada con el componente.html (se actualiza en ambas)
-  termino: string = '';
-  hayError: boolean = false;
-  paises: Country[] = [];
+  termino           : string = '';
+  hayError          : boolean = false;
+  paises            : Country[] = [];
+  paisesSugeridos   : Country[] = [];
+  mostrarSugerencias: boolean = false;
 
   /**
    * Description: Constructor de la clase
@@ -28,6 +37,7 @@ export class PorPaisComponent {
     // console.log(this.termino);
     this.hayError = false;
     this.termino = terminoFromInputComponent;
+    this.mostrarSugerencias = false;
     this.paisService.buscarPorPais(this.termino).subscribe(
       (paises) => {
         console.log(paises);
@@ -49,6 +59,21 @@ export class PorPaisComponent {
    *  */
   sugerencias(terminoForSugerencias: string): void {
     this.hayError = false;
+    this.termino = terminoForSugerencias;
+    this.mostrarSugerencias = true;
     //TODO crear sugerencias
+    this.paisService.buscarPorPais(terminoForSugerencias).subscribe(
+      (paises) => (this.paisesSugeridos = paises.splice(0, 8)), //splice para mostrar cierta cantidad y no la totalidad de los paises
+      (err) => (this.paisesSugeridos = [])
+    );
+  }
+
+  /**
+   * Description: Función para buscar paises utilizando las sugerencias
+   * @param {string} termino
+   * @returns {any}
+   *  */
+  buscarSugerido(termino: string): void {
+    this.buscar(termino);
   }
 }

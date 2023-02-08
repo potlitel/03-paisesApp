@@ -1,21 +1,41 @@
-<h2>Por País</h2>
-<hr />
+<div class="animate__animated animate__fadeIn animate__faster">
+  <h2>Por País</h2>
+  <hr />
 
-<div class="row">
-  <div class="col">
-    <!-- Este component 'app-pais-input' esta en modo listening para el evento 'onEnter', then
+  <div class="row">
+    <div class="col">
+      <!-- Este component 'app-pais-input' esta en modo listening para el evento 'onEnter', then
          invocamos la función 'buscar' (del component app-por-pais) y le pasamos como parámetro, el valor $event, que contiene 
          el valor del término tecleado dentro del input del component 'app-pais-input'
      -->
-    <app-pais-input
-      (onEnter)="buscar($event)"
-      (onDebounce)="sugerencias($event)"
-      placeHolder="Buscar país ..."
-    ></app-pais-input>
+      <app-pais-input
+        (onEnter)="buscar($event)"
+        (onDebounce)="sugerencias($event)"
+        placeHolder="Buscar país ..."
+      ></app-pais-input>
+    </div>
   </div>
-</div>
-<hr />
 
+  <!-- Solo mostraremos las sugerencias siempre que se comience a teclear y mientras el 'termino' sea diferente de string.empty -->
+  <ul *ngIf=" mostrarSugerencias && termino.length > 0 " class="list-group">
+    <li *ngFor="let item of paisesSugeridos"
+        class="list-group-item list-group-item-action">
+        <a class="nav-link"
+           [routerLink]="['/pais', item.alpha2Code]">
+        {{ item.name }}
+        </a>
+    </li>
+
+    <li class="list-group-item list-group-item-action"
+        (click)="buscarSugerido(termino)">
+        <a class="nav-link">
+        Buscar "{{ termino }}"
+        </a>
+    </li>
+  </ul>
+
+  <hr />
+</div>
 <div *ngIf="hayError" class="alert alert-danger">
   No se encontró nada con el término {{ termino | uppercase }}
 </div>
